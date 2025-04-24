@@ -1,9 +1,18 @@
-h1 {
-    color: red;
-    text-align: center;
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #333;
 }
 
-p{
+h1, h2 {
+    margin: 0 0 10px;
+}
+
+p {
+    margin: 10px 0;
     background: rgb(62, 235, 215);
     color: white;
     padding: 38px;
@@ -21,4 +30,85 @@ p#second-paragraph {
 }
 p#third-paragraph {
     cursor: pointer;
+}
+
+/* Header */
+header {
+    background-color: #003366;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header img {
+    height: 60px;
+}
+
+/* Hero Section */
+#hero {
+    text-align: center;
+    padding: 50px;
+    background-color: #f0f0f0;
+}
+
+#hero h1 {
+    font-size: 2.5em;
+    color: #003366;
+}
+
+#hero h2 {
+    font-size: 1.5em;
+    color: #555;
+}
+
+#hero img {
+    width: 45%;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+/* Main Content */
+main {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+article {
+    margin-bottom: 30px;
+}
+
+article h1 {
+    font-size: 2em;
+    color: #003366;
+}
+
+article h2 {
+    font-size: 1.2em;
+    color: #666;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #003366;
+    color: white;
+}
+
+.styled-paragraph {
+    background-color: #f0f0f0; /* Matches the hero section background */
+    border: 1px solid #003366; /* Matches the page's primary color */
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+    font-family: 'Roboto', sans-serif;
+    color: #333; /* Matches the text color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+}
+
+.styled-paragraph p {
+    margin: 0;
+    font-size: 1em;
+    line-height: 1.6;
 }
