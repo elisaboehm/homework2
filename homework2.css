@@ -1,0 +1,14 @@
+h1 {
+    color: red;
+    text-align: center;
+}
+
+p{
+    background: rgb(62, 235, 215);
+    color: white;
+    padding: 38px;
+    border: 2px solid black;
+    box-shadow: 5px 5px 10px rgb(8, 8, 8);
+    font-weight: 800;
+    font-size: 20px;
+}
