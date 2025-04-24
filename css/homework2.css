@@ -13,11 +13,11 @@ h1, h2 {
 
 p {
     margin: 10px 0;
-    background: rgb(62, 235, 215);
-    color: white;
+    background: #003366; /* Matches the website's primary color */
+    color: white; /* Ensures text is readable on the dark background */
     padding: 38px;
-    border: 2px solid black;
-    box-shadow: 5px 5px 10px rgb(8, 8, 8);
+    border: 2px solid #00aaff; /* Adds a complementary border color */
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Keeps the shadow consistent */
     font-weight: 800;
     font-size: 20px;
 }
