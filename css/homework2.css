@@ -12,3 +12,13 @@ p{
     font-weight: 800;
     font-size: 20px;
 }
+
+p#first-paragraph {
+    cursor: pointer;
+}
+p#second-paragraph {
+    cursor: pointer;
+}
+p#third-paragraph {
+    cursor: pointer;
+}
