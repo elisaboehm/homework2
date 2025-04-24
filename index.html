@@ -31,12 +31,63 @@
             </article>
             <img src="pictures/NYC picture.jpg" alt="NYC Image 3" style="width: 80%; height: auto; display: block; margin: auto; border: 5px solid #003366; border-radius: 10px;">
         </main>
-        
+
+        <!-- Chat Section -->
+        <section id="chat" style="padding: 20px; background-color: #f9f9f9; border-top: 2px solid #003366;">
+            <h2 style="text-align: center; color: #003366;">Chat with Us</h2>
+            <form id="chatForm" style="max-width: 800px; margin: auto;">
+                <input type="text" id="chatName" placeholder="Your Name" required style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;">
+                <textarea id="chatMessage" placeholder="Your Message" rows="4" required style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                <button type="submit" style="background-color: #003366; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Send</button>
+            </form>
+            <div class="messages" id="messages" style="max-width: 800px; margin: 20px auto; padding: 10px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                <!-- Messages will be dynamically loaded here -->
+            </div>
+        </section>
 
         <footer style="text-align: center; padding: 20px; background-color: #003366; color: white;">
             <p>&copy; 2025 NYC Blog. All rights reserved.</p>
         </footer>
 
-        <script src="js/homework2.js"></script>
+        <script>
+            const chatForm = document.getElementById('chatForm');
+            const messagesDiv = document.getElementById('messages');
+
+            // Fetch and display messages
+            async function fetchMessages() {
+                const response = await fetch('/comments');
+                const messages = await response.json();
+                messagesDiv.innerHTML = messages.map(message => `
+                    <div style="border-bottom: 1px solid #ccc; padding: 10px 0;">
+                        <h3 style="margin: 0; color: #003366;">${message.name}</h3>
+                        <p style="margin: 5px 0 0;">${message.comment}</p>
+                        <small>${new Date(message.timestamp).toLocaleString()}</small>
+                    </div>
+                `).join('');
+            }
+
+            // Handle form submission
+            chatForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('chatName').value;
+                const message = document.getElementById('chatMessage').value;
+
+                const response = await fetch('/comments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, comment: message })
+                });
+
+                if (response.ok) {
+                    chatForm.reset();
+                    fetchMessages();
+                } else {
+                    alert('Failed to send message.');
+                }
+            });
+
+            // Initial fetch
+            fetchMessages();
+        </script>
     </body>
 </html>
