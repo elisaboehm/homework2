@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC Comments</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        form input, form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        form button {
+            background-color: #003366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #0055aa;
+        }
+        .comments {
+            margin-top: 20px;
+        }
+        .comment {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        .comment:last-child {
+            border-bottom: none;
+        }
+        .comment h3 {
+            margin: 0;
+            color: #003366;
+        }
+        .comment p {
+            margin: 5px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Leave a Comment</h1>
+        <form id="commentForm">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <textarea id="comment" placeholder="Your Comment" rows="4" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+        <div class="comments" id="comments"></div>
+    </div>
+
+    <script>
+        const commentForm = document.getElementById('commentForm');
+        const commentsDiv = document.getElementById('comments');
+
+        // Fetch and display comments
+        async function fetchComments() {
+            const response = await fetch('/comments');
+            const comments = await response.json();
+            commentsDiv.innerHTML = comments.map(comment => `
+                <div class="comment">
+                    <h3>${comment.name}</h3>
+                    <p>${comment.comment}</p>
+                    <small>${new Date(comment.timestamp).toLocaleString()}</small>
+                </div>
+            `).join('');
+        }
+
+        // Handle form submission
+        commentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const comment = document.getElementById('comment').value;
+
+            const response = await fetch('/comments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, comment })
+            });
+
+            if (response.ok) {
+                commentForm.reset();
+                fetchComments();
+            } else {
+                alert('Failed to submit comment.');
+            }
+        });
+
+        // Initial fetch
+        fetchComments();
+    </script>
+</body>
+</html>
