@@ -1,114 +1,114 @@
 /* General Styles */
 body {
-    font-family: 'Roboto', sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    color: #333;
+    font-family: 'Roboto', sans-serif; /* Sets a clean, modern font */
+    line-height: 1.6; /* Improves text readability by adding line spacing */
+    margin: 0; /* Removes default margin from body */
+    padding: 0; /* Removes default padding from body */
+    color: #333; /* Sets default text color to dark gray */
 }
 
+
 h1, h2 {
-    margin: 0 0 10px;
+    margin: 0 0 10px; /* Adds space below headings */
 }
 
 p {
-    margin: 10px 0;
-    background: #003366; /* Matches the website's primary color */
-    color: white; /* Ensures text is readable on the dark background */
-    padding: 38px;
-    border: 2px solid #00aaff; /* Adds a complementary border color */
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Keeps the shadow consistent */
-    font-weight: 800;
-    font-size: 20px;
+    margin: 10px 0; /* Adds vertical spacing between paragraphs */
+    background: #003366; /* Sets dark blue background */
+    color: white; /* Ensures text is readable against dark background */
+    padding: 38px; /* Adds space inside the paragraph box */
+    border: 2px solid #00aaff; /* Adds a border with a light blue accent */
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Creates a soft shadow for depth */
+    font-weight: 800; /* Makes the text bold */
+    font-size: 20px; /* Increases text size */
 }
 
-p#first-paragraph {
-    cursor: pointer;
-}
-p#second-paragraph {
-    cursor: pointer;
-}
+
+/* Adds hover interaction cursor for clickable paragraphs */
+p#first-paragraph,
+p#second-paragraph,
 p#third-paragraph {
-    cursor: pointer;
+    cursor: pointer; /* Keep pointer when hovering over these */
 }
 
-/* Header */
+/* ========== Header Styles ========== */
 header {
-    background-color: #003366;
-    color: white;
-    padding: 20px;
-    text-align: center;
+    background-color: #003366; /* Dark blue background */
+    color: white; /* White text for contrast */
+    padding: 20px; /* Adds space inside the header */
+    text-align: center; /* Centers text and logo */
 }
 
 header img {
-    height: 60px;
+    height: 60px; /* Sets the height of the logo */
 }
 
-/* Hero Section */
+/* ========== Hero Section ========== */
 #hero {
-    text-align: center;
-    padding: 50px;
-    background-color: #f0f0f0;
+    text-align: center; /* Centers all content in this section */
+    padding: 50px; /* Adds space around the content */
+    background-color: #f0f0f0; /* Light gray background */
 }
 
 #hero h1 {
-    font-size: 2.5em;
-    color: #003366;
+    font-size: 2.5em; /* Large title */
+    color: #003366; /* Matches primary dark blue color */
 }
 
 #hero h2 {
-    font-size: 1.5em;
-    color: #555;
+    font-size: 1.5em; /* Smaller subtitle */
+    color: #555; /* Medium gray for a softer subtitle look */
 }
 
 #hero img {
-    width: 45%;
-    margin: 10px;
-    border-radius: 5px;
+    width: 45%; /* Makes each image take up 45% of the container width */
+    margin: 10px; /* Adds spacing between images */
+    border-radius: 5px; /* Slightly rounds the corners of the images */
 }
 
-/* Main Content */
+/* ========== Main Content ========== */
 main {
-    padding: 20px;
-    max-width: 800px;
-    margin: auto;
+    padding: 20px; /* Adds padding inside the main content block */
+    max-width: 800px; /* Limits how wide the content can get */
+    margin: auto; /* Centers the main content horizontally */
 }
 
 article {
-    margin-bottom: 30px;
+    margin-bottom: 30px; /* Adds space below each article */
 }
 
 article h1 {
-    font-size: 2em;
-    color: #003366;
+    font-size: 2em; /* Large title inside the article */
+    color: #003366; /* Primary color */
 }
 
 article h2 {
-    font-size: 1.2em;
-    color: #666;
+    font-size: 1.2em; /* Subheading size */
+    color: #666; /* Soft gray tone */
 }
 
-/* Footer */
+/* ========== Footer Styles ========== */
 footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #003366;
-    color: white;
+    text-align: center; /* Centers text inside footer */
+    padding: 20px; /* Adds padding */
+    background-color: #003366; /* Matches header background */
+    color: white; /* White text for contrast */
 }
 
+/* ========== Optional Styled Paragraph Component ========== */
 .styled-paragraph {
-    background-color: #f0f0f0; /* Matches the hero section background */
-    border: 1px solid #003366; /* Matches the page's primary color */
-    border-radius: 10px;
-    padding: 15px;
-    margin: 10px 0;
-    font-family: 'Roboto', sans-serif;
-    color: #333; /* Matches the text color */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+    background-color: #f0f0f0; /* Light gray background */
+    border: 1px solid #003366; /* Border matches main color theme */
+    border-radius: 10px; /* Rounded corners */
+    padding: 15px; /* Adds inner spacing */
+    margin: 10px 0; /* Adds space between paragraphs */
+    font-family: 'Roboto', sans-serif; /* Ensures consistent font usage */
+    color: #333; /* Text color matches body */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
 .styled-paragraph p {
-    margin: 0;
-    font-size: 1em;
-    line-height: 1.6;
+    margin: 0; /* Removes default paragraph margin inside styled container */
+    font-size: 1em; /* Standard readable text size */
+    line-height: 1.6; /* Good readability */
 }

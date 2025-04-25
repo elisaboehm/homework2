@@ -1,4 +1,4 @@
 body {
-    background: white;
-    color: rgb(230, 98, 28);
+    background: white; /* Sets white background */
+    color: rgb(230, 98, 28); /* Sets text orange */
 }
