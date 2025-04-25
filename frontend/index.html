@@ -1,0 +1,138 @@
+<html>
+    <head>
+         <!-- Title shown on the browser tab -->
+         <title>First Project</title>
+
+         <!-- Link to custom stylesheet for layout and design -->
+         <link rel="stylesheet" href="css/homework2.css">
+ 
+         <!-- Additional theme stylesheet for color or design overrides -->
+         <link rel="stylesheet" href="css/bluetheme.css">
+ 
+         <!-- Google Fonts link to import Roboto font -->
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    </head>
+
+
+    <!-- Main content starts here -->
+    <body style="font-family: 'Roboto', sans-serif; line-height: 1.6; margin: 0; padding: 0;">
+        
+        <!-- Header section with gradient background and logo -->
+        <header style="text-align: center; padding: 20px; background: linear-gradient(90deg, #003366, #00aaff); color: white;">
+            <img src="pictures/NYC logo.png" alt="NYC Logo" style="height: 60px;"> <!-- NYC logo -->
+            <h1 style="margin: 10px 0; font-size: 2em;">Discover New York City 🗽</h1> <!-- Title text -->
+        </header>
+
+
+        <!-- Hero section with a welcome heading and two images -->
+        <section id="hero" style="text-align: center; padding: 50px; background-color: #f0f0f0;">
+            <h1 style="font-size: 2.5em; margin-bottom: 10px; color: #003366;">Welcome to the Heart of NYC</h1>
+            <h2 style="font-size: 1.5em; color: #555;">Skyscrapers, subways, and stories</h2>
+            <div style="margin-top: 20px">
+                <!-- Two photos representing New York City -->
+                <img src="pictures/Central Park.jpg" alt="NYC Image 1" style="width: 45%; margin: 10px;">
+                <img src="pictures/NYC at night.avif" alt="NYC Image 2" style="width: 45%; margin: 10px;">   
+            </div>
+        </section>
+
+
+        <!-- Main content block centered on the page -->
+        <main style="padding: 20px; max-width: 800px; margin: auto;">
+            <article style="margin-bottom: 30px;">
+                
+                <!-- Main headline and subheading -->
+                <h1 style="font-size: 2em; color: #003366;">My First NYC Page</h1>
+                <h2 style="font-size: 1.2em; color: #666;">A small tribute to the city that never sleeps...</h2>
+                
+                <!-- Paragraphs about your NYC adventures -->
+                <p id="first-paragraph">This page showcases a few snapshots from my adventures around New York.</p>
+                <p id="second-paragraph">I'm exploring places like Central Park, the Brooklyn Bridge, and local cafés.</p>
+                <p id="third-paragraph">Stay tuned for updates with new pictures and hidden gems across the boroughs.</p>
+            </article>
+
+            <!-- Large NYC image with styled border -->
+            <img src="pictures/NYC picture.jpg" alt="NYC Image 3" style="width: 80%; height: auto; display: block; margin: auto; border: 5px solid #003366; border-radius: 10px;">
+        </main>
+
+
+        <!-- Chat form section for user interaction -->
+        <section id="chat" style="padding: 20px; background-color: #f9f9f9; border-top: 2px solid #003366;">
+            <h2 style="text-align: center; color: #003366;">Chat with Us</h2>
+            
+            <!-- Form for name and message input -->
+            <form id="chatForm" style="max-width: 800px; margin: auto;">
+                <input type="text" id="chatName" placeholder="Your Name" required style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;">
+                <textarea id="chatMessage" placeholder="Your Message" rows="4" required style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                <button type="submit" style="background-color: #003366; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Send</button>
+            </form>
+
+            <!-- Container for displaying submitted messages -->
+            <div class="messages" id="messages" style="max-width: 800px; margin: 20px auto; padding: 10px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                <!-- Messages will be dynamically loaded here -->
+            </div>
+        </section>
+
+
+        <!-- Footer with copyright -->
+        <footer style="text-align: center; padding: 20px; background-color: #003366; color: white;">
+            <p>&copy; 2025 NYC Blog. All rights reserved.</p>
+        </footer>
+
+
+        <!-- JavaScript to handle chat functionality -->
+        <script>
+            // Get reference to form and message container
+            const chatForm = document.getElementById('chatForm');
+            const messagesDiv = document.getElementById('messages');
+
+            // Function to fetch and display messages from backend
+            async function fetchMessages() {
+                try {
+                    const response = await fetch('http://localhost:3000/comments'); // Ensure the URL matches your backend
+                    const messages = await response.json();
+                    
+                    // Render messages inside the chat box
+                    messagesDiv.innerHTML = messages.map(message => `
+                        <div style="border-bottom: 1px solid #ccc; padding: 10px 0;">
+                            <h3 style="margin: 0; color: #003366;">${message.name}</h3>
+                            <p style="margin: 5px 0 0;">${message.comment}</p>
+                            <small>${new Date(message.timestamp).toLocaleString()}</small>
+                        </div>
+                    `).join('');
+                } catch (error) {
+                    console.error('Error fetching messages:', error);
+                }
+            }
+
+            // Event listener for when the user submits the chat form
+            chatForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); // Prevent page reload
+
+                // Get name and message values
+                const name = document.getElementById('chatName').value;
+                const message = document.getElementById('chatMessage').value;
+
+                try {
+                    // Send the message to the backend
+                    const response = await fetch('http://localhost:3000/comments', { // Ensure the URL matches your backend
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, comment: message })
+                    });
+
+                    if (response.ok) {
+                        chatForm.reset(); // Clear form
+                        fetchMessages(); // Refresh message list
+                    } else {
+                        alert('Failed to send message.');
+                    }
+                } catch (error) {
+                    console.error('Error submitting message:', error);
+                }
+            });
+
+            // Load messages on page load
+            fetchMessages();
+        </script>
+    </body>
+</html>
