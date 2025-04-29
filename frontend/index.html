@@ -37,40 +37,86 @@
 
 
         <!-- Main content block centered on the page -->
-        <main style="padding: 20px; max-width: 800px; margin: auto;">
+        <main style="padding: 20px; max-width: 800px; margin: auto; background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
             <article style="margin-bottom: 30px;">
-                
                 <!-- Main headline and subheading -->
-                <h1 style="font-size: 2em; color: #003366;">My First NYC Page</h1>
-                <h2 style="font-size: 1.2em; color: #666;">A small tribute to the city that never sleeps...</h2>
-                
+                <h1 style="font-size: 2em; color: #003366; font-family: 'Poppins', sans-serif;">My First NYC Page</h1>
+                <h2 style="font-size: 1.2em; color: #666; font-family: 'Roboto', sans-serif;">A small tribute to the city that never sleeps...</h2>
                 <!-- Paragraphs about your NYC adventures -->
                 <p id="first-paragraph">This page showcases a few snapshots from my adventures around New York.</p>
                 <p id="second-paragraph">I'm exploring places like Central Park, the Brooklyn Bridge, and local cafés.</p>
                 <p id="third-paragraph">Stay tuned for updates with new pictures and hidden gems across the boroughs.</p>
             </article>
-
             <!-- Large NYC image with styled border -->
-            <img src="pictures/NYC picture.jpg" alt="NYC Image 3" style="width: 80%; height: auto; display: block; margin: auto; border: 5px solid #003366; border-radius: 10px;">
+            <img src="pictures/NYC picture.jpg" alt="NYC Image 3" style="width: 80%; height: auto; display: block; margin: auto; border: 5px solid #003366; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
         </main>
 
 
-        <!-- Chat form section for user interaction -->
-        <section id="chat" style="padding: 20px; background-color: #f9f9f9; border-top: 2px solid #003366;">
-            <h2 style="text-align: center; color: #003366;">Chat with Us</h2>
-            
-            <!-- Form for name and message input -->
-            <form id="chatForm" style="max-width: 800px; margin: auto;">
-                <input type="text" id="chatName" placeholder="Your Name" required style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;">
-                <textarea id="chatMessage" placeholder="Your Message" rows="4" required style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;"></textarea>
-                <button type="submit" style="background-color: #003366; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Send</button>
-            </form>
-
-            <!-- Container for displaying submitted messages -->
-            <div class="messages" id="messages" style="max-width: 800px; margin: 20px auto; padding: 10px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+        <!-- Chatbox section for user interaction and AI responses -->
+        <section id="chat" style="padding: 20px; background-color: #e6f2ff; border-top: 2px solid #003366; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+            <h2 style="text-align: center; color: #003366; font-family: 'Poppins', sans-serif;">Chat with AI</h2>
+            <!-- Chatbox container -->
+            <div id="chatContainer" style="max-width: 800px; margin: auto; padding: 10px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); overflow-y: auto; height: 300px;">
                 <!-- Messages will be dynamically loaded here -->
+                <div id="chatMessages"></div>
             </div>
+            <!-- Form for user input -->
+            <form id="chatForm" style="max-width: 800px; margin: 20px auto; display: flex; gap: 10px;">
+                <input type="text" id="userMessage" placeholder="Type your message..." required style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+                <button type="submit" style="background-color: #003366; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">Send</button>
+            </form>
         </section>
+
+        <script>
+            const chatForm = document.getElementById('chatForm');
+            const chatMessages = document.getElementById('chatMessages');
+
+            // Function to add a message to the chatbox
+            function addMessageToChat(sender, message) {
+                const messageDiv = document.createElement('div');
+                messageDiv.style.margin = '10px 0';
+                messageDiv.style.padding = '10px';
+                messageDiv.style.borderRadius = '8px';
+                messageDiv.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+                messageDiv.style.backgroundColor = sender === 'AI' ? '#003366' : '#e6f2ff';
+                messageDiv.style.color = sender === 'AI' ? 'white' : 'black';
+                messageDiv.textContent = `${sender}: ${message}`;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to the bottom
+            }
+
+            // Handle form submission
+            chatForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const userMessage = document.getElementById('userMessage').value;
+
+                // Add user's message to the chatbox
+                addMessageToChat('You', userMessage);
+
+                // Clear the input field
+                chatForm.reset();
+
+                try {
+                    // Send the user's message to the backend for AI response
+                    const response = await fetch('http://localhost:3000/ai-response', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: userMessage })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        // Add AI's response to the chatbox
+                        addMessageToChat('AI', data.response);
+                    } else {
+                        addMessageToChat('AI', 'Sorry, I could not process your request.');
+                    }
+                } catch (error) {
+                    console.error('Error communicating with AI:', error);
+                    addMessageToChat('AI', 'An error occurred while trying to communicate with the AI.');
+                }
+            });
+        </script>
 
 
         <!-- Footer with copyright -->
@@ -85,7 +131,12 @@
             const chatForm = document.getElementById('chatForm');
             const messagesDiv = document.getElementById('messages');
 
-            // Function to fetch and display messages from backend
+            // Scroll the chat container to the bottom
+            function scrollToBottom() {
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+
+            // Fetch and display messages from backend
             async function fetchMessages() {
                 try {
                     const response = await fetch('http://localhost:3000/comments'); // Ensure the URL matches your backend
@@ -99,6 +150,9 @@
                             <small>${new Date(message.timestamp).toLocaleString()}</small>
                         </div>
                     `).join('');
+
+                    // Scroll to the bottom after loading messages
+                    scrollToBottom();
                 } catch (error) {
                     console.error('Error fetching messages:', error);
                 }
@@ -133,6 +187,88 @@
 
             // Load messages on page load
             fetchMessages();
+        </script>
+
+        <script>
+            const emojiPickerButton = document.getElementById('emojiPickerButton');
+            const emojiPicker = document.getElementById('emojiPicker');
+            const chatMessage = document.getElementById('chatMessage');
+
+            // Toggle emoji picker visibility
+            emojiPickerButton.addEventListener('click', () => {
+                emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
+            });
+
+            // Add emoji to the message box when clicked
+            emojiPicker.addEventListener('click', (event) => {
+                if (event.target.tagName === 'SPAN') {
+                    chatMessage.value += event.target.textContent;
+                    emojiPicker.style.display = 'none'; // Hide the emoji picker after selection
+                }
+            });
+
+            // Close emoji picker if clicked outside
+            document.addEventListener('click', (event) => {
+                if (!emojiPicker.contains(event.target) && event.target !== emojiPickerButton) {
+                    emojiPicker.style.display = 'none';
+                }
+            });
+        </script>
+
+        <!-- Dark mode toggle button -->
+        <button id="darkModeToggle" style="position: fixed; top: 20px; right: 20px; background-color: #003366; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; z-index: 1000;">Toggle Dark Mode</button>
+
+        <style>
+            /* Dark mode styles */
+            .dark-mode {
+                background-color: #001f3f; /* Navy background */
+                color: white; /* White text */
+            }
+
+            .dark-mode header {
+                background: linear-gradient(90deg, #001f3f, #003366); /* Darker gradient */
+            }
+
+            .dark-mode footer {
+                background-color: #001f3f; /* Match dark mode background */
+            }
+
+            .dark-mode button {
+                background-color: #ffcc00; /* Gold accents */
+                color: black; /* Black text for contrast */
+            }
+
+            .dark-mode #chat {
+                background-color: #00264d; /* Slightly lighter navy for chat section */
+            }
+
+            .dark-mode .messages {
+                background-color: #003366; /* Darker background for messages */
+                color: white; /* White text for messages */
+            }
+        </style>
+
+        <script>
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+
+            // Function to toggle dark mode
+            darkModeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+
+                // Save the user's preference in localStorage
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            // Apply the saved theme on page load
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+            }
         </script>
     </body>
 </html>

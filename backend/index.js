@@ -3,6 +3,7 @@ const express = require('express');           // Web framework for Node.js
 const bodyParser = require('body-parser');   // Middleware to parse JSON request bodies
 const cors = require('cors');                // Middleware to enable Cross-Origin Resource Sharing
 const sqlite3 = require('sqlite3').verbose(); // SQLite3 database with verbose logging
+const { Configuration, OpenAIApi } = require('openai');
 
 // Initialize the Express app
 const app = express();
@@ -58,6 +59,32 @@ app.post('/comments', (req, res) => {
     });
 });
 
+// Initialize OpenAI API
+const openai = new OpenAIApi(new Configuration({
+    apiKey: process.env.OPENAI_API_KEY, // Ensure you set this environment variable
+}));
+
+// Endpoint to get AI-generated response
+app.post('/ai-response', async (req, res) => {
+    const { message } = req.body;
+    if (!message) {
+        return res.status(400).json({ error: 'Message is required.' });
+    }
+
+    try {
+        const response = await openai.createCompletion({
+            model: 'text-davinci-003', // Use a suitable OpenAI model
+            prompt: `You are a helpful assistant. Respond to the following message: ${message}`,
+            max_tokens: 150,
+        });
+
+        const aiResponse = response.data.choices[0].text.trim();
+        res.json({ response: aiResponse });
+    } catch (error) {
+        console.error('Error generating AI response:', error);
+        res.status(500).json({ error: 'Failed to generate AI response.' });
+    }
+});
 
 // Start the server on port 3000
 const PORT = 3000;
