@@ -3,9 +3,13 @@ const express = require('express');           // Web framework for Node.js
 const bodyParser = require('body-parser');   // Middleware to parse JSON request bodies
 const cors = require('cors');                // Middleware to enable Cross-Origin Resource Sharing
 const sqlite3 = require('sqlite3').verbose(); // SQLite3 database with verbose logging
+const path = require('path');                 // Helps with file paths
 
 // Initialize the Express app
 const app = express();
+
+// Serve static files from the frontend folder
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // Connect to (or create) a SQLite database file called 'comments.db'
 const db = new sqlite3.Database('./comments.db');
