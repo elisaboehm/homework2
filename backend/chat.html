@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NYC Chat</title>
     <style>
+        /* General styling for the page */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
         }
+
+        /* Styling for the chat container */
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -19,13 +22,19 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+
+        /* Styling for the header */
         h1 {
             text-align: center;
             color: #333;
         }
+
+        /* Styling for the form */
         form {
             margin-bottom: 20px;
         }
+
+        /* Styling for input fields and text areas */
         form input, form textarea {
             width: 100%;
             padding: 10px;
@@ -33,6 +42,8 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
+        /* Styling for the submit button */
         form button {
             background-color: #003366;
             color: white;
@@ -41,23 +52,35 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
+        /* Hover effect for the submit button */
         form button:hover {
             background-color: #0055aa;
         }
+
+        /* Styling for the messages section */
         .messages {
             margin-top: 20px;
         }
+
+        /* Styling for individual messages */
         .message {
             border-bottom: 1px solid #ccc;
             padding: 10px 0;
         }
+
+        /* Remove border for the last message */
         .message:last-child {
             border-bottom: none;
         }
+
+        /* Styling for the message header (name) */
         .message h3 {
             margin: 0;
             color: #003366;
         }
+
+        /* Styling for the message text */
         .message p {
             margin: 5px 0 0;
         }
@@ -66,24 +89,33 @@
 <body>
     <div class="container">
         <h1>NYC Chat</h1>
+        <!-- Chat form for submitting messages -->
         <form id="chatForm">
+            <!-- Input field for the user's name -->
             <input type="text" id="chatName" placeholder="Your Name" required>
+            <!-- Text area for the user's message -->
             <textarea id="chatMessage" placeholder="Your Message" rows="4" required></textarea>
+            <!-- Submit button -->
             <button type="submit">Send</button>
         </form>
+        <!-- Section to display chat messages -->
         <div class="messages" id="messages"></div>
     </div>
 
     <script>
+        // Reference to the chat form and messages container
         const chatForm = document.getElementById('chatForm');
         const messagesDiv = document.getElementById('messages');
 
-        // Fetch and display messages
+        // Function to fetch and display messages from the backend
         async function fetchMessages() {
             try {
+                // Fetch messages from the backend API
                 const response = await fetch('http://localhost:3000/comments');
                 if (!response.ok) throw new Error('Failed to fetch messages');
                 const messages = await response.json();
+
+                // Render messages in the messages container
                 messagesDiv.innerHTML = messages.map(message => `
                     <div class="message">
                         <h3>${message.name}</h3>
@@ -96,13 +128,16 @@
             }
         }
 
-        // Handle form submission
+        // Event listener for form submission
         chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Prevent the default form submission behavior
+
+            // Get the user's name and message from the form
             const name = document.getElementById('chatName').value;
             const message = document.getElementById('chatMessage').value;
 
             try {
+                // Send the new message to the backend API
                 const response = await fetch('http://localhost:3000/comments', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -110,6 +145,7 @@
                 });
 
                 if (response.ok) {
+                    // Reset the form and fetch the updated messages
                     chatForm.reset();
                     fetchMessages();
                 } else {
@@ -120,7 +156,7 @@
             }
         });
 
-        // Initial fetch
+        // Fetch and display messages when the page loads
         fetchMessages();
     </script>
 </body>
