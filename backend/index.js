@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 // Import required modules
 const express = require('express');           // Web framework for Node.js
 const bodyParser = require('body-parser');   // Middleware to parse JSON request bodies
@@ -81,7 +83,11 @@ app.post('/ai-response', async (req, res) => {
         const aiResponse = response.data.choices[0].text.trim();
         res.json({ response: aiResponse });
     } catch (error) {
-        console.error('Error generating AI response:', error);
+        console.error('OpenAI API error details:', {
+            status: error.response?.status,
+            data: error.response?.data,
+            message: error.message
+        });
         res.status(500).json({ error: 'Failed to generate AI response.' });
     }
 });
