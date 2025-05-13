@@ -1,99 +1,102 @@
 require('dotenv').config();
 
-// Import required modules
-const express = require('express');           // Web framework for Node.js
-const bodyParser = require('body-parser');   // Middleware to parse JSON request bodies
-const cors = require('cors');                // Middleware to enable Cross-Origin Resource Sharing
-const sqlite3 = require('sqlite3').verbose(); // SQLite3 database with verbose logging
-const { Configuration, OpenAIApi } = require('openai');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const sqlite3 = require('sqlite3').verbose();
+const OpenAI = require('openai');
+const path = require('path');
 
-// Initialize the Express app
 const app = express();
 
-// Connect to (or create) a SQLite database file called 'comments.db'
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// SQLite setup
 const db = new sqlite3.Database('./comments.db');
 
-// Middleware setup
-app.use(cors());                // Allow requests from different origins
-app.use(bodyParser.json());     // Parse JSON request bodies
+app.use(cors());
+app.use(bodyParser.json());
 
-// Create comments table if it doesn't exist
+// Create table if not exists
 db.run(`CREATE TABLE IF NOT EXISTS comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     name TEXT NOT NULL,
     comment TEXT NOT NULL,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
-// Unique ID for each comment
-// Name of the commenter
-// Comment text
-// Time the comment was posted
 
-// GET endpoint to fetch all comments from the database
+// GET all comments
 app.get('/comments', (req, res) => {
     db.all('SELECT * FROM comments ORDER BY timestamp DESC', [], (err, rows) => {
-        if (err) {
-            // If there's a database error, return a 500 status
-            return res.status(500).json({ error: err.message });
-        }
-        // Return all comments in JSON format
+        if (err) return res.status(500).json({ error: err.message });
         res.json(rows);
     });
 });
 
-// POST endpoint to add a new comment to the database
+// POST a new comment
 app.post('/comments', (req, res) => {
     const { name, comment } = req.body;
-
-    // Check if both name and comment are provided
     if (!name || !comment) {
         return res.status(400).json({ error: 'Name and comment are required.' });
     }
 
-    // Insert the new comment into the database
     db.run('INSERT INTO comments (name, comment) VALUES (?, ?)', [name, comment], function (err) {
-        if (err) {
-            // Handle database errors
-            return res.status(500).json({ error: err.message });
-        }
-        // Return the ID of the new comment with status 201 (created)
+        if (err) return res.status(500).json({ error: err.message });
         res.status(201).json({ id: this.lastID });
     });
 });
 
-// Initialize OpenAI API
-const openai = new OpenAIApi(new Configuration({
-    apiKey: process.env.OPENAI_API_KEY, // Ensure you set this environment variable
-}));
+// ✅ OpenAI API v4 setup
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 
-// Endpoint to get AI-generated response
+console.log("🔐 OpenAI key loaded:", process.env.OPENAI_API_KEY);
+
+// ✅ AI chat route (GPT-4 compatible)
 app.post('/ai-response', async (req, res) => {
     const { message } = req.body;
+
     if (!message) {
         return res.status(400).json({ error: 'Message is required.' });
     }
 
+    console.log("🟡 Calling OpenAI with message:", message);
+
     try {
-        const response = await openai.createCompletion({
-            model: 'text-davinci-003', // Use a suitable OpenAI model
-            prompt: `You are a helpful assistant. Respond to the following message: ${message}`,
-            max_tokens: 150,
+        const response = await openai.chat.completions.create({
+            model: 'gpt-3.5-turbo', // or 'gpt-4' if your key supports it
+            messages: [
+                { role: 'system', content: 'You are a helpful assistant.' },
+                { role: 'user', content: message }
+            ],
+            max_tokens: 150
         });
 
-        const aiResponse = response.data.choices[0].text.trim();
+        const aiResponse = response.choices[0].message.content.trim();
         res.json({ response: aiResponse });
+
     } catch (error) {
-        console.error('OpenAI API error details:', {
-            status: error.response?.status,
-            data: error.response?.data,
-            message: error.message
-        });
+        console.error('❌ OpenAI API error details:');
+        if (error.response) {
+            console.error('Status:', error.response.status);
+            console.error('Data:', error.response.data);
+        } else {
+            console.error('Message:', error.message);
+        }
+
         res.status(500).json({ error: 'Failed to generate AI response.' });
     }
 });
 
-// Start the server on port 3000
+// Serve HTML page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
+// Start server
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
